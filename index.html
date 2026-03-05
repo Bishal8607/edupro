@@ -1324,7 +1324,7 @@ footer {
 // ═══════════════════════════════════════════════════
 // DATA STORE
 // ═══════════════════════════════════════════════════
-const API = 'http://localhost:5000/api';
+const API = 'https://edupro-production-a1d2.up.railway.app/api';
 
 let state = {
   user: JSON.parse(localStorage.getItem('epUser')) || null,
@@ -1626,7 +1626,7 @@ function downloadNote(id, title) {
   // Try server API
   var token = localStorage.getItem('epToken');
   if (token) {
-    var url = 'http://localhost:5000/api/notes/' + id + '/download';
+    var url = 'https://edupro-production-a1d2.up.railway.app/api/notes/' + id + '/download';
     fetch(url, { headers: { 'Authorization': 'Bearer ' + token } })
       .then(function(r) {
         if (r.ok) return r.blob();
