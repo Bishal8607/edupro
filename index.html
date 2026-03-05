@@ -1,0 +1,2096 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EduPro — Learn Without Limits</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0d14;
+  --bg2: #0f1320;
+  --bg3: #161c2e;
+  --card: #131929;
+  --border: rgba(255,255,255,0.07);
+  --gold: #f5c842;
+  --teal: #00d4aa;
+  --coral: #ff6b6b;
+  --blue: #4f8ef7;
+  --text: #e8eaf0;
+  --muted: #6b7280;
+  --radius: 14px;
+  --font-display: 'Fraunces', serif;
+  --font-body: 'DM Sans', sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ─── NOISE OVERLAY ─── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.4;
+}
+
+/* ─── SCROLLBAR ─── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--bg3); border-radius: 3px; }
+
+/* ─── NAV ─── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 40px; height: 68px;
+  background: rgba(10,13,20,0.85);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-logo {
+  font-family: var(--font-display);
+  font-size: 22px; font-weight: 700; color: var(--gold);
+  text-decoration: none; letter-spacing: -0.5px;
+}
+.nav-logo span { color: var(--teal); }
+.nav-links { display: flex; gap: 32px; align-items: center; }
+.nav-links a {
+  color: var(--muted); text-decoration: none; font-size: 14px; font-weight: 500;
+  transition: color .2s; cursor: pointer;
+}
+.nav-links a:hover, .nav-links a.active { color: var(--text); }
+.nav-actions { display: flex; gap: 12px; align-items: center; }
+.btn-ghost {
+  background: none; border: 1px solid var(--border); color: var(--text);
+  padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 500;
+  cursor: pointer; transition: all .2s; font-family: var(--font-body);
+}
+.btn-ghost:hover { border-color: var(--teal); color: var(--teal); }
+.btn-primary {
+  background: var(--gold); color: #0a0d14;
+  padding: 8px 20px; border-radius: 8px; font-size: 13px; font-weight: 600;
+  cursor: pointer; border: none; transition: all .2s; font-family: var(--font-body);
+}
+.btn-primary:hover { background: #ffd960; transform: translateY(-1px); }
+.cart-btn {
+  position: relative; background: var(--bg3); border: 1px solid var(--border);
+  color: var(--text); padding: 8px 14px; border-radius: 8px;
+  cursor: pointer; font-size: 13px; transition: all .2s;
+}
+.cart-btn:hover { border-color: var(--teal); }
+.cart-count {
+  position: absolute; top: -6px; right: -6px; background: var(--coral);
+  color: white; width: 18px; height: 18px; border-radius: 50%;
+  font-size: 10px; display: flex; align-items: center; justify-content: center;
+  font-weight: 700;
+}
+.user-avatar {
+  width: 36px; height: 36px; border-radius: 50%; background: var(--teal);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 13px; color: var(--bg); cursor: pointer;
+}
+
+/* ─── PAGES ─── */
+.page { display: none; min-height: 100vh; padding-top: 68px; }
+.page.active { display: block; }
+
+/* ─── HOME PAGE ─── */
+.hero {
+  position: relative; overflow: hidden;
+  padding: 100px 40px 80px;
+  min-height: calc(100vh - 68px);
+  display: flex; align-items: center;
+}
+.hero-glow {
+  position: absolute; top: -200px; left: -100px;
+  width: 700px; height: 700px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(0,212,170,0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero-glow2 {
+  position: absolute; bottom: -300px; right: -100px;
+  width: 600px; height: 600px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(245,200,66,0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero-content { max-width: 650px; position: relative; z-index: 1; }
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(0,212,170,0.1); border: 1px solid rgba(0,212,170,0.3);
+  color: var(--teal); padding: 6px 14px; border-radius: 100px;
+  font-size: 12px; font-weight: 600; letter-spacing: 0.5px;
+  text-transform: uppercase; margin-bottom: 28px;
+}
+.hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(46px, 6vw, 72px); font-weight: 900;
+  line-height: 1.05; letter-spacing: -2px; margin-bottom: 22px;
+  color: #fff;
+}
+.hero h1 em { font-style: italic; color: var(--gold); }
+.hero p {
+  font-size: 17px; color: var(--muted); line-height: 1.7;
+  margin-bottom: 36px; max-width: 520px;
+}
+.hero-actions { display: flex; gap: 14px; flex-wrap: wrap; }
+.btn-lg {
+  padding: 14px 30px; border-radius: 10px; font-size: 15px;
+  font-weight: 600; cursor: pointer; border: none; transition: all .25s;
+  font-family: var(--font-body); text-decoration: none;
+  display: inline-flex; align-items: center; gap: 8px;
+}
+.btn-gold { background: var(--gold); color: var(--bg); }
+.btn-gold:hover { background: #ffd960; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(245,200,66,0.3); }
+.btn-outline-lg {
+  background: transparent; border: 1px solid var(--border);
+  color: var(--text); padding: 14px 28px; border-radius: 10px;
+  font-size: 15px; font-weight: 500; cursor: pointer; transition: all .25s;
+  font-family: var(--font-body);
+}
+.btn-outline-lg:hover { border-color: var(--teal); color: var(--teal); }
+.hero-stats {
+  display: flex; gap: 40px; margin-top: 52px; flex-wrap: wrap;
+}
+.stat-item { }
+.stat-num { font-family: var(--font-display); font-size: 30px; font-weight: 700; color: #fff; }
+.stat-label { font-size: 12px; color: var(--muted); letter-spacing: 0.3px; }
+
+.hero-visual {
+  position: absolute; right: 40px; top: 50%;
+  transform: translateY(-50%);
+  display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+  width: 420px;
+}
+@media (max-width: 1000px) { .hero-visual { display: none; } }
+.mini-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 12px; padding: 16px;
+}
+.mini-card:nth-child(2) { margin-top: 32px; }
+.mini-card:nth-child(4) { margin-top: -32px; }
+.mini-card-icon { font-size: 24px; margin-bottom: 8px; }
+.mini-card-title { font-size: 12px; font-weight: 600; margin-bottom: 4px; }
+.mini-card-sub { font-size: 11px; color: var(--muted); }
+
+/* ─── SECTION ─── */
+section { padding: 80px 40px; }
+.section-label {
+  font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--teal); margin-bottom: 12px;
+}
+.section-title {
+  font-family: var(--font-display); font-size: clamp(30px, 4vw, 44px);
+  font-weight: 700; line-height: 1.15; letter-spacing: -1px;
+  margin-bottom: 16px; color: #fff;
+}
+.section-sub { font-size: 16px; color: var(--muted); max-width: 560px; }
+.section-header { margin-bottom: 48px; }
+.section-header-row {
+  display: flex; justify-content: space-between; align-items: flex-end;
+  flex-wrap: wrap; gap: 16px; margin-bottom: 48px;
+}
+
+/* ─── CARDS GRID ─── */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+/* ─── COURSE CARD ─── */
+.course-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius); overflow: hidden;
+  cursor: pointer; transition: all .25s; position: relative;
+}
+.course-card:hover { border-color: rgba(0,212,170,0.3); transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,0.3); }
+.course-thumb {
+  height: 160px; display: flex; align-items: center; justify-content: center;
+  font-size: 48px; position: relative; overflow: hidden;
+}
+.course-badge {
+  position: absolute; top: 10px; right: 10px;
+  background: rgba(0,0,0,0.6); backdrop-filter: blur(8px);
+  color: var(--gold); font-size: 11px; font-weight: 700;
+  padding: 4px 10px; border-radius: 100px;
+}
+.course-body { padding: 18px; }
+.course-category {
+  font-size: 10px; font-weight: 700; letter-spacing: 1.5px;
+  text-transform: uppercase; color: var(--teal); margin-bottom: 8px;
+}
+.course-title {
+  font-size: 16px; font-weight: 600; margin-bottom: 8px; line-height: 1.3;
+}
+.course-meta {
+  display: flex; gap: 14px; font-size: 12px; color: var(--muted);
+  margin-bottom: 14px; align-items: center;
+}
+.course-meta span { display: flex; align-items: center; gap: 4px; }
+.course-footer {
+  display: flex; justify-content: space-between; align-items: center;
+  padding-top: 14px; border-top: 1px solid var(--border);
+}
+.course-price { font-size: 18px; font-weight: 700; color: var(--gold); }
+.course-price-old { font-size: 12px; color: var(--muted); text-decoration: line-through; margin-left: 6px; }
+.btn-sm {
+  padding: 7px 16px; border-radius: 7px; font-size: 12px; font-weight: 600;
+  cursor: pointer; border: none; transition: all .2s; font-family: var(--font-body);
+}
+.btn-teal { background: var(--teal); color: var(--bg); }
+.btn-teal:hover { background: #00e8bb; }
+
+/* ─── LIVE CLASSES ─── */
+.live-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 22px;
+  cursor: pointer; transition: all .25s;
+  display: flex; gap: 18px; align-items: flex-start;
+}
+.live-card:hover { border-color: rgba(255,107,107,0.3); transform: translateY(-2px); }
+.live-time-box {
+  background: var(--bg3); border-radius: 10px; padding: 12px 14px;
+  text-align: center; min-width: 70px; flex-shrink: 0;
+}
+.live-time-day { font-size: 11px; color: var(--muted); font-weight: 500; }
+.live-time-date { font-size: 22px; font-weight: 700; color: #fff; line-height: 1; margin: 4px 0; }
+.live-time-month { font-size: 11px; color: var(--teal); font-weight: 600; }
+.live-info { flex: 1; }
+.live-status {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 10px; font-weight: 700; letter-spacing: 0.5px;
+  padding: 3px 9px; border-radius: 100px; margin-bottom: 8px;
+}
+.live-status.live-now { background: rgba(255,107,107,0.15); color: var(--coral); }
+.live-status.upcoming { background: rgba(79,142,247,0.15); color: var(--blue); }
+.live-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; animation: pulse 1.5s infinite; }
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+.live-title { font-size: 15px; font-weight: 600; margin-bottom: 6px; }
+.live-teacher { font-size: 12px; color: var(--muted); }
+.live-meta { display: flex; gap: 12px; margin-top: 10px; font-size: 12px; color: var(--muted); }
+.live-action { margin-left: auto; align-self: center; }
+.btn-coral { background: var(--coral); color: white; }
+.btn-coral:hover { background: #ff8080; }
+.btn-blue { background: var(--blue); color: white; }
+.btn-blue:hover { background: #6ea5ff; }
+
+/* ─── PDF NOTES ─── */
+.note-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius); overflow: hidden;
+  cursor: pointer; transition: all .25s;
+}
+.note-card:hover { border-color: rgba(245,200,66,0.3); transform: translateY(-3px); }
+.note-preview {
+  height: 140px; background: var(--bg3);
+  display: flex; align-items: center; justify-content: center;
+  position: relative; overflow: hidden;
+}
+.note-preview-icon { font-size: 40px; }
+.note-pages {
+  position: absolute; bottom: 8px; right: 8px;
+  background: rgba(0,0,0,0.6); color: var(--muted);
+  font-size: 10px; padding: 2px 8px; border-radius: 100px;
+}
+.note-body { padding: 16px; }
+.note-subject { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; color: var(--gold); text-transform: uppercase; margin-bottom: 6px; }
+.note-title { font-size: 14px; font-weight: 600; margin-bottom: 8px; line-height: 1.3; }
+.note-footer {
+  display: flex; justify-content: space-between; align-items: center;
+  padding-top: 12px; border-top: 1px solid var(--border); margin-top: 10px;
+}
+.note-price { font-size: 16px; font-weight: 700; color: var(--gold); }
+
+/* ─── FEATURES ─── */
+.features-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px;
+}
+.feature-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 28px 22px;
+}
+.feature-icon {
+  width: 48px; height: 48px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; margin-bottom: 16px;
+}
+.feature-title { font-size: 15px; font-weight: 600; margin-bottom: 8px; }
+.feature-desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+/* ─── COURSES PAGE ─── */
+.page-header {
+  padding: 48px 40px 0;
+  background: linear-gradient(to bottom, var(--bg2), transparent);
+}
+.page-header h1 {
+  font-family: var(--font-display); font-size: 38px;
+  font-weight: 700; letter-spacing: -1px; margin-bottom: 8px;
+}
+.filters {
+  display: flex; gap: 10px; flex-wrap: wrap;
+  padding: 24px 40px 0;
+}
+.filter-btn {
+  padding: 7px 16px; border-radius: 100px; font-size: 12px; font-weight: 600;
+  cursor: pointer; border: 1px solid var(--border); background: transparent;
+  color: var(--muted); transition: all .2s; font-family: var(--font-body);
+}
+.filter-btn:hover, .filter-btn.active {
+  background: var(--teal); border-color: var(--teal); color: var(--bg);
+}
+.search-bar {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 10px; padding: 10px 16px;
+  max-width: 400px;
+}
+.search-bar input {
+  background: none; border: none; outline: none;
+  color: var(--text); font-size: 14px; flex: 1; font-family: var(--font-body);
+}
+.search-bar input::placeholder { color: var(--muted); }
+
+/* ─── LIVE CLASSES PAGE ─── */
+.schedule-grid {
+  display: grid; gap: 14px;
+}
+
+/* ─── CART SIDEBAR ─── */
+.cart-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+  z-index: 200; display: none; backdrop-filter: blur(4px);
+}
+.cart-overlay.open { display: block; }
+.cart-sidebar {
+  position: fixed; right: 0; top: 0; bottom: 0; width: 380px; z-index: 201;
+  background: var(--bg2); border-left: 1px solid var(--border);
+  transform: translateX(100%); transition: transform .3s ease;
+  display: flex; flex-direction: column;
+}
+.cart-sidebar.open { transform: translateX(0); }
+.cart-head {
+  padding: 24px 24px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex; justify-content: space-between; align-items: center;
+}
+.cart-head h3 { font-family: var(--font-display); font-size: 20px; }
+.close-btn {
+  background: var(--bg3); border: none; color: var(--muted);
+  width: 30px; height: 30px; border-radius: 6px; cursor: pointer;
+  font-size: 16px; display: flex; align-items: center; justify-content: center;
+}
+.close-btn:hover { color: var(--text); }
+.cart-items { flex: 1; overflow-y: auto; padding: 16px 24px; }
+.cart-item {
+  display: flex; gap: 12px; align-items: center;
+  padding: 12px 0; border-bottom: 1px solid var(--border);
+}
+.cart-item-icon {
+  width: 44px; height: 44px; border-radius: 8px; background: var(--bg3);
+  display: flex; align-items: center; justify-content: center; font-size: 20px;
+  flex-shrink: 0;
+}
+.cart-item-info { flex: 1; }
+.cart-item-name { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+.cart-item-type { font-size: 11px; color: var(--muted); }
+.cart-item-price { font-size: 15px; font-weight: 700; color: var(--gold); }
+.cart-remove { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 16px; padding: 4px; }
+.cart-remove:hover { color: var(--coral); }
+.cart-footer { padding: 20px 24px; border-top: 1px solid var(--border); }
+.cart-total {
+  display: flex; justify-content: space-between;
+  font-size: 16px; font-weight: 600; margin-bottom: 16px;
+}
+.cart-total span:last-child { color: var(--gold); font-size: 20px; }
+
+/* ─── MODAL ─── */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+  z-index: 300; display: none; align-items: center; justify-content: center;
+  backdrop-filter: blur(4px);
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 20px; padding: 36px; width: 90%; max-width: 440px;
+  position: relative;
+}
+.modal h2 {
+  font-family: var(--font-display); font-size: 26px;
+  margin-bottom: 6px; font-weight: 700;
+}
+.modal-sub { color: var(--muted); font-size: 14px; margin-bottom: 28px; }
+.form-group { margin-bottom: 18px; }
+.form-group label {
+  display: block; font-size: 12px; font-weight: 600;
+  color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px;
+  margin-bottom: 7px;
+}
+.form-group input, .form-group select, .form-group textarea {
+  width: 100%; background: var(--bg3); border: 1px solid var(--border);
+  color: var(--text); padding: 11px 14px; border-radius: 9px;
+  font-size: 14px; outline: none; transition: border-color .2s;
+  font-family: var(--font-body);
+}
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+  border-color: var(--teal);
+}
+.form-group textarea { min-height: 90px; resize: vertical; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.btn-full { width: 100%; padding: 13px; font-size: 15px; }
+.auth-switch { text-align: center; margin-top: 18px; font-size: 13px; color: var(--muted); }
+.auth-switch a { color: var(--teal); cursor: pointer; text-decoration: none; }
+.modal-close {
+  position: absolute; top: 16px; right: 16px;
+  background: var(--bg3); border: none; color: var(--muted);
+  width: 30px; height: 30px; border-radius: 6px; cursor: pointer;
+  font-size: 18px; display: flex; align-items: center; justify-content: center;
+}
+
+/* ─── DASHBOARD ─── */
+.dashboard-layout {
+  display: flex;
+  min-height: calc(100vh - 68px);
+  align-items: stretch;
+}
+.sidebar {
+  width: 220px;
+  min-width: 220px;
+  max-width: 220px;
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+.sidebar-user {
+  text-align: center;
+  padding: 24px 14px 18px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.sidebar-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--teal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--bg);
+  margin: 0 auto 8px;
+}
+.sidebar-name {
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--text);
+  margin-bottom: 2px;
+}
+.sidebar-email {
+  font-size: 10px;
+  color: var(--muted);
+  word-break: break-all;
+}
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  padding: 10px 8px;
+  gap: 1px;
+  flex: 1;
+}
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 9px 10px;
+  border-radius: 7px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all .15s;
+  border: none;
+  background: none;
+  text-align: left;
+  width: 100%;
+  font-family: var(--font-body);
+  line-height: 1.3;
+}
+.sidebar-link:hover { background: var(--bg3); color: var(--text); }
+.sidebar-link.active { background: rgba(0,212,170,0.12); color: var(--teal); }
+.sidebar-logout {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 14px 18px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--coral);
+  cursor: pointer;
+  border: none;
+  border-top: 1px solid var(--border);
+  background: none;
+  text-align: left;
+  width: 100%;
+  font-family: var(--font-body);
+  transition: background .15s;
+  flex-shrink: 0;
+}
+.sidebar-logout:hover { background: rgba(255,107,107,0.08); }
+.dashboard-main {
+  flex: 1;
+  padding: 32px;
+  overflow-x: auto;
+  min-width: 0;
+}
+.dash-section { display: none; }
+.dash-section.active { display: block; }
+.stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 32px; }
+.stat-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 20px;
+}
+.stat-card-label { font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+.stat-card-value { font-size: 28px; font-weight: 700; color: #fff; font-family: var(--font-display); }
+.stat-card-change { font-size: 12px; color: var(--teal); margin-top: 4px; }
+.progress-bar {
+  background: var(--bg3); border-radius: 100px; height: 6px; margin-top: 8px;
+}
+.progress-fill { height: 100%; border-radius: 100px; background: var(--teal); transition: width .6s ease; }
+
+/* ─── ADMIN PANEL ─── */
+.admin-tabs { display: flex; gap: 4px; margin-bottom: 28px; background: var(--bg3); border-radius: 10px; padding: 4px; }
+.admin-tab {
+  padding: 9px 18px; border-radius: 7px; font-size: 13px; font-weight: 600;
+  cursor: pointer; border: none; background: none; color: var(--muted);
+  transition: all .2s; font-family: var(--font-body);
+}
+.admin-tab.active { background: var(--bg2); color: var(--text); }
+.admin-content { display: none; }
+.admin-content.active { display: block; }
+.table { width: 100%; border-collapse: collapse; }
+.table th {
+  text-align: left; padding: 12px 16px; font-size: 11px; font-weight: 700;
+  letter-spacing: 0.5px; text-transform: uppercase; color: var(--muted);
+  border-bottom: 1px solid var(--border);
+}
+.table td {
+  padding: 14px 16px; font-size: 13px; border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+.table tr:last-child td { border-bottom: none; }
+.table tr:hover td { background: rgba(255,255,255,0.02); }
+.badge {
+  display: inline-block; padding: 3px 10px; border-radius: 100px;
+  font-size: 10px; font-weight: 700; letter-spacing: 0.5px;
+}
+.badge-green { background: rgba(0,212,170,0.15); color: var(--teal); }
+.badge-blue { background: rgba(79,142,247,0.15); color: var(--blue); }
+.badge-gold { background: rgba(245,200,66,0.15); color: var(--gold); }
+.badge-coral { background: rgba(255,107,107,0.15); color: var(--coral); }
+
+
+/* ─── COURSE DETAIL ─── */
+.detail-header {
+  background: var(--bg2); border-bottom: 1px solid var(--border);
+  padding: 48px 40px;
+}
+.detail-header-inner {
+  max-width: 1100px; margin: 0 auto;
+  display: grid; grid-template-columns: 1fr 380px; gap: 48px; align-items: start;
+}
+.detail-category { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; color: var(--teal); text-transform: uppercase; margin-bottom: 12px; }
+.detail-title { font-family: var(--font-display); font-size: 36px; font-weight: 700; margin-bottom: 16px; line-height: 1.15; }
+.detail-desc { font-size: 15px; color: var(--muted); line-height: 1.7; margin-bottom: 24px; }
+.detail-meta { display: flex; gap: 20px; font-size: 13px; color: var(--muted); flex-wrap: wrap; }
+.detail-meta span { display: flex; align-items: center; gap: 5px; }
+.detail-purchase-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 16px; padding: 28px; position: sticky; top: 88px;
+}
+.detail-price { font-size: 32px; font-weight: 700; color: var(--gold); margin-bottom: 6px; }
+.detail-price-note { font-size: 12px; color: var(--muted); margin-bottom: 20px; }
+.curriculum { max-width: 1100px; margin: 0 auto; padding: 48px 40px; }
+.curriculum h2 { font-family: var(--font-display); font-size: 26px; font-weight: 700; margin-bottom: 24px; }
+.module {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 12px; margin-bottom: 12px; overflow: hidden;
+}
+.module-header {
+  padding: 16px 20px; display: flex; justify-content: space-between;
+  cursor: pointer; font-weight: 600; font-size: 14px;
+}
+.module-lessons { padding: 0 20px 14px; }
+.lesson {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 0; font-size: 13px; color: var(--muted);
+  border-bottom: 1px solid var(--border);
+}
+.lesson:last-child { border-bottom: none; }
+.lesson-icon { font-size: 14px; }
+
+/* ─── CHECKOUT ─── */
+.checkout-grid { display: grid; grid-template-columns: 1fr 360px; gap: 32px; max-width: 1100px; margin: 0 auto; padding: 48px 40px; }
+.order-summary { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 24px; position: sticky; top: 88px; }
+.order-summary h3 { font-size: 16px; font-weight: 600; margin-bottom: 16px; }
+.order-line { display: flex; justify-content: space-between; font-size: 13px; padding: 8px 0; border-bottom: 1px solid var(--border); color: var(--muted); }
+.order-line:last-child { border-bottom: none; color: var(--text); font-weight: 600; font-size: 15px; }
+
+/* ─── TOAST ─── */
+.toast-container {
+  position: fixed; bottom: 24px; right: 24px; z-index: 400;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.toast {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 12px; padding: 14px 18px;
+  display: flex; align-items: center; gap: 10px;
+  font-size: 13px; font-weight: 500; max-width: 320px;
+  animation: slideIn .3s ease; box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+}
+.toast.success { border-color: rgba(0,212,170,0.3); }
+.toast.error { border-color: rgba(255,107,107,0.3); }
+@keyframes slideIn { from { transform: translateX(100px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+@keyframes slideOut { to { transform: translateX(100px); opacity: 0; } }
+
+/* ─── EMPTY STATE ─── */
+.empty-state { text-align: center; padding: 60px 20px; }
+.empty-state-icon { font-size: 48px; margin-bottom: 16px; }
+.empty-state h3 { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
+.empty-state p { color: var(--muted); font-size: 14px; }
+
+/* ─── FOOTER ─── */
+footer {
+  background: var(--bg2); border-top: 1px solid var(--border);
+  padding: 60px 40px 30px;
+}
+.footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 40px; }
+.footer-brand .nav-logo { font-size: 20px; display: inline-block; margin-bottom: 12px; }
+.footer-brand p { font-size: 13px; color: var(--muted); line-height: 1.7; max-width: 260px; }
+.footer-col h4 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 16px; }
+.footer-col a { display: block; font-size: 13px; color: var(--muted); margin-bottom: 10px; text-decoration: none; cursor: pointer; transition: color .2s; }
+.footer-col a:hover { color: var(--text); }
+.footer-bottom { display: flex; justify-content: space-between; align-items: center; padding-top: 24px; border-top: 1px solid var(--border); font-size: 12px; color: var(--muted); }
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 768px) {
+  nav { padding: 0 20px; }
+  .nav-links { display: none; }
+  section, .page-header { padding: 48px 20px; }
+  .hero { padding: 60px 20px 50px; }
+  .stats-row { grid-template-columns: 1fr 1fr; }
+  .dashboard-layout { grid-template-columns: 1fr; }
+  .sidebar { display: none; } .sidebar-inner { display: none; }
+  .checkout-grid, .detail-header-inner { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+}
+
+/* ─── COLORS FOR THUMBS ─── */
+.thumb-blue { background: linear-gradient(135deg, #1a2a6c, #2d62ea); }
+.thumb-purple { background: linear-gradient(135deg, #2d1b69, #7c3aed); }
+.thumb-green { background: linear-gradient(135deg, #064e3b, #059669); }
+.thumb-red { background: linear-gradient(135deg, #7f1d1d, #dc2626); }
+.thumb-orange { background: linear-gradient(135deg, #7c2d12, #ea580c); }
+.thumb-pink { background: linear-gradient(135deg, #500724, #db2777); }
+.thumb-teal { background: linear-gradient(135deg, #042f2e, #0d9488); }
+.thumb-gold { background: linear-gradient(135deg, #451a03, #d97706); }
+
+/* ─── RATING STARS ─── */
+.stars { color: var(--gold); font-size: 12px; }
+
+/* Loading spinner */
+.spinner {
+  width: 20px; height: 20px; border: 2px solid var(--border);
+  border-top-color: var(--teal); border-radius: 50%;
+  animation: spin .7s linear infinite; display: inline-block;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Pill tabs */
+.pill-tabs { display: flex; gap: 8px; margin-bottom: 28px; }
+.pill-tab {
+  padding: 8px 20px; border-radius: 100px; font-size: 13px; font-weight: 600;
+  cursor: pointer; border: 1px solid var(--border); background: transparent;
+  color: var(--muted); transition: all .2s; font-family: var(--font-body);
+}
+.pill-tab.active { background: var(--gold); border-color: var(--gold); color: var(--bg); }
+</style>
+</head>
+<body>
+
+<!-- ─── NAVBAR ─── -->
+<nav>
+  <a class="nav-logo" onclick="navigate('home')">Edu<span>Pro</span></a>
+  <div class="nav-links">
+    <a onclick="navigate('home')" id="nav-home">Home</a>
+    <a onclick="navigate('courses')" id="nav-courses">Courses</a>
+    <a onclick="navigate('live')" id="nav-live">Live Classes</a>
+    <a onclick="navigate('notes')" id="nav-notes">PDF Notes</a>
+    <a onclick="navigate('dashboard')" id="nav-dashboard">Dashboard</a>
+  </div>
+  <div class="nav-actions">
+    <button class="cart-btn" onclick="toggleCart()">
+      🛒 Cart <span class="cart-count" id="cartCount">0</span>
+    </button>
+    <div id="authButtons">
+      <button class="btn-ghost" onclick="openModal('loginModal')">Sign In</button>
+      <button class="btn-primary" onclick="openModal('signupModal')">Get Started</button>
+    </div>
+    <div id="userMenu" style="display:none">
+      <div class="user-avatar" id="userAvatar" onclick="navigate('dashboard')">U</div>
+    </div>
+  </div>
+</nav>
+
+<!-- ─── HOME PAGE ─── -->
+<div class="page active" id="page-home">
+  <section class="hero">
+    <div class="hero-glow"></div>
+    <div class="hero-glow2"></div>
+    <div class="hero-content">
+      <div class="hero-badge">✦ 10,000+ Students Learning</div>
+      <h1>Learn. Grow.<br><em>Achieve More</em><br>Than Ever.</h1>
+      <p>Access premium courses, join live interactive classes, and download expert-curated PDF notes — all in one powerful learning platform.</p>
+      <div class="hero-actions">
+        <button class="btn-lg btn-gold" onclick="navigate('courses')">Explore Courses →</button>
+        <button class="btn-outline-lg" onclick="navigate('live')">▶ Watch Live</button>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-item"><div class="stat-num">120+</div><div class="stat-label">Expert Courses</div></div>
+        <div class="stat-item"><div class="stat-num">48</div><div class="stat-label">Live Classes / Mo</div></div>
+        <div class="stat-item"><div class="stat-num">500+</div><div class="stat-label">PDF Notes</div></div>
+        <div class="stat-item"><div class="stat-num">98%</div><div class="stat-label">Satisfaction Rate</div></div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="mini-card"><div class="mini-card-icon">⚛️</div><div class="mini-card-title">React Mastery</div><div class="mini-card-sub">4.9 ★ · 2.4k students</div></div>
+      <div class="mini-card"><div class="mini-card-icon">🔴</div><div class="mini-card-title">Live Now: Python</div><div class="mini-card-sub">142 watching</div></div>
+      <div class="mini-card"><div class="mini-card-icon">📄</div><div class="mini-card-title">DSA Notes Bundle</div><div class="mini-card-sub">85 pages · ₹199</div></div>
+      <div class="mini-card"><div class="mini-card-icon">🎯</div><div class="mini-card-title">Interview Prep</div><div class="mini-card-sub">New course added</div></div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section style="background:var(--bg2); border-top:1px solid var(--border); border-bottom:1px solid var(--border);">
+    <div style="max-width:1100px; margin:0 auto;">
+      <div class="section-header" style="text-align:center;">
+        <div class="section-label">Why EduPro</div>
+        <h2 class="section-title">Everything You Need to Succeed</h2>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon" style="background:rgba(0,212,170,0.1)">🎓</div>
+          <div class="feature-title">Expert-Led Courses</div>
+          <div class="feature-desc">120+ in-depth courses across tech, design, business, and more taught by industry professionals.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon" style="background:rgba(255,107,107,0.1)">📡</div>
+          <div class="feature-title">Live Interactive Classes</div>
+          <div class="feature-desc">Join live sessions, ask questions in real-time, and get instant answers from teachers.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon" style="background:rgba(245,200,66,0.1)">📑</div>
+          <div class="feature-title">PDF Notes & Resources</div>
+          <div class="feature-desc">Download premium notes, cheat sheets, and study guides crafted by top educators.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon" style="background:rgba(79,142,247,0.1)">🏆</div>
+          <div class="feature-title">Certificates</div>
+          <div class="feature-desc">Earn verifiable certificates upon course completion to boost your career profile.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon" style="background:rgba(0,212,170,0.1)">📱</div>
+          <div class="feature-title">Learn Anywhere</div>
+          <div class="feature-desc">Fully responsive platform — access all content on any device, anytime, anywhere.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon" style="background:rgba(124,58,237,0.1)">🔒</div>
+          <div class="feature-title">Lifetime Access</div>
+          <div class="feature-desc">Purchase once and revisit course content forever, including all future updates.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Courses -->
+  <section style="max-width:1100px; margin:0 auto;">
+    <div class="section-header-row">
+      <div>
+        <div class="section-label">Popular</div>
+        <h2 class="section-title">Featured Courses</h2>
+      </div>
+      <button class="btn-ghost" onclick="navigate('courses')">View All →</button>
+    </div>
+    <div class="cards-grid" id="homeCourses"></div>
+  </section>
+
+  <!-- Upcoming Live Classes -->
+  <section style="background:var(--bg2); border-top:1px solid var(--border); border-bottom:1px solid var(--border);">
+    <div style="max-width:1100px; margin:0 auto;">
+      <div class="section-header-row">
+        <div>
+          <div class="section-label">Live Sessions</div>
+          <h2 class="section-title">Upcoming Classes</h2>
+        </div>
+        <button class="btn-ghost" onclick="navigate('live')">View Schedule →</button>
+      </div>
+      <div class="schedule-grid" id="homeLive"></div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="nav-logo">Edu<span>Pro</span></a>
+        <p>The all-in-one learning platform for students who are serious about their career. Learn from experts, practice with live sessions.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Platform</h4>
+        <a onclick="navigate('courses')">Courses</a>
+        <a onclick="navigate('live')">Live Classes</a>
+        <a onclick="navigate('notes')">PDF Notes</a>
+        <a onclick="navigate('dashboard')">Dashboard</a>
+      </div>
+      <div class="footer-col">
+        <h4>Support</h4>
+        <a>Help Center</a>
+        <a>Contact Us</a>
+        <a>Community</a>
+        <a>Blog</a>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <a>Privacy Policy</a>
+        <a>Terms of Service</a>
+        <a>Refund Policy</a>
+        <a>Cookie Policy</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2024 EduPro. All rights reserved.</span>
+      <span>Made with ❤️ for learners everywhere</span>
+    </div>
+  </footer>
+</div>
+
+<!-- ─── COURSES PAGE ─── -->
+<div class="page" id="page-courses">
+  <div class="page-header">
+    <h1>All Courses</h1>
+    <p style="color:var(--muted); font-size:14px; margin-top:6px;">Explore 120+ expert-led courses across all subjects</p>
+  </div>
+  <div style="padding:24px 40px; display:flex; gap:16px; align-items:center; flex-wrap:wrap;">
+    <div class="search-bar" style="flex:1; min-width:220px;">
+      <span>🔍</span>
+      <input type="text" placeholder="Search courses..." id="courseSearch" oninput="filterCourses()">
+    </div>
+    <div class="filters" style="padding:0;">
+      <button class="filter-btn active" onclick="setCatFilter('all', this)">All</button>
+      <button class="filter-btn" onclick="setCatFilter('programming', this)">Programming</button>
+      <button class="filter-btn" onclick="setCatFilter('design', this)">Design</button>
+      <button class="filter-btn" onclick="setCatFilter('data science', this)">Data Science</button>
+      <button class="filter-btn" onclick="setCatFilter('devops', this)">DevOps</button>
+      <button class="filter-btn" onclick="setCatFilter('business', this)">Business</button>
+    </div>
+  </div>
+  <div style="padding:0 40px 60px;">
+    <div class="cards-grid" id="allCourses"></div>
+  </div>
+</div>
+
+<!-- ─── COURSE DETAIL PAGE ─── -->
+<div class="page" id="page-courseDetail">
+  <div class="detail-header">
+    <div class="detail-header-inner">
+      <div>
+        <div class="detail-category" id="detailCategory"></div>
+        <h1 class="detail-title" id="detailTitle"></h1>
+        <p class="detail-desc" id="detailDesc"></p>
+        <div class="detail-meta" id="detailMeta"></div>
+      </div>
+      <div class="detail-purchase-card">
+        <div class="detail-price" id="detailPrice"></div>
+        <div class="detail-price-note">One-time payment · Lifetime access</div>
+        <button class="btn-lg btn-gold btn-full" id="detailEnrollBtn" onclick="enrollCourse()">Enroll Now</button>
+        <div style="margin-top:12px; text-align:center; font-size:12px; color:var(--muted);">30-day money-back guarantee</div>
+        <div style="margin-top:20px;">
+          <div style="font-size:12px; font-weight:600; margin-bottom:10px; color:var(--muted);">THIS COURSE INCLUDES:</div>
+          <div style="font-size:13px; display:flex; flex-direction:column; gap:8px;" id="detailIncludes"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="curriculum">
+    <h2>Course Curriculum</h2>
+    <div id="detailCurriculum"></div>
+    <button onclick="navigate('courses')" style="margin-top:24px;" class="btn-ghost">← Back to Courses</button>
+  </div>
+</div>
+
+<!-- ─── LIVE CLASSES PAGE ─── -->
+<div class="page" id="page-live">
+  <div class="page-header">
+    <h1>Live Classes</h1>
+    <p style="color:var(--muted); font-size:14px; margin-top:6px;">Join live interactive sessions with expert instructors</p>
+  </div>
+  <div style="padding:24px 40px 60px;">
+    <div class="pill-tabs">
+      <button class="pill-tab active" onclick="setLiveFilter('all', this)">All Sessions</button>
+      <button class="pill-tab" onclick="setLiveFilter('live', this)">🔴 Live Now</button>
+      <button class="pill-tab" onclick="setLiveFilter('upcoming', this)">📅 Upcoming</button>
+      <button class="pill-tab" onclick="setLiveFilter('recorded', this)">📹 Recorded</button>
+    </div>
+    <div class="schedule-grid" id="allLive"></div>
+  </div>
+</div>
+
+<!-- ─── PDF NOTES PAGE ─── -->
+<div class="page" id="page-notes">
+  <div class="page-header">
+    <h1>PDF Notes & Study Material</h1>
+    <p style="color:var(--muted); font-size:14px; margin-top:6px;">Expert-crafted notes, cheat sheets and guides</p>
+  </div>
+  <div style="padding:16px 40px 8px;">
+    <div class="filters" style="padding:0;">
+      <button class="filter-btn active" onclick="setNoteFilter('all', this)">All</button>
+      <button class="filter-btn" onclick="setNoteFilter('programming', this)">Programming</button>
+      <button class="filter-btn" onclick="setNoteFilter('mathematics', this)">Mathematics</button>
+      <button class="filter-btn" onclick="setNoteFilter('science', this)">Science</button>
+      <button class="filter-btn" onclick="setNoteFilter('competitive', this)">Competitive Exam</button>
+    </div>
+  </div>
+  <div style="padding:16px 40px 60px;">
+    <div class="cards-grid" id="allNotes"></div>
+  </div>
+</div>
+
+<!-- ─── DASHBOARD PAGE ─── -->
+<div class="page" id="page-dashboard">
+  <div class="dashboard-layout">
+    <div class="sidebar">
+      <div class="sidebar-user">
+        <div class="sidebar-avatar" id="dashAvatar">U</div>
+        <div class="sidebar-name" id="dashName">Student</div>
+        <div class="sidebar-email" id="dashEmail">your account</div>
+      </div>
+      <nav class="sidebar-nav">
+        <button class="sidebar-link active" onclick="showDashSection('overview', this)">📊 Overview</button>
+        <button class="sidebar-link" onclick="showDashSection('myCourses', this)">🎓 My Courses</button>
+        <button class="sidebar-link" onclick="showDashSection('myNotes', this)">📄 My Notes</button>
+        <button class="sidebar-link" onclick="showDashSection('schedule', this)">📅 Schedule</button>
+        <button class="sidebar-link" onclick="showDashSection('orders', this)">🧾 Orders</button>
+        <button class="sidebar-link" onclick="showDashSection('adminPanel', this)" id="adminLink" style="display:none;">⚙️ Admin Panel</button>
+      </nav>
+      <button class="sidebar-logout" onclick="logout()">🚪 Logout</button>
+    </div>
+    </div>
+    <div class="dashboard-main">
+      <!-- Overview -->
+      <div class="dash-section active" id="dash-overview">
+        <h2 style="font-family:var(--font-display); font-size:26px; margin-bottom:24px;">Welcome back, <span id="dashWelcomeName" style="color:var(--gold)">Student</span>! 👋</h2>
+        <div class="stats-row">
+          <div class="stat-card"><div class="stat-card-label">Enrolled Courses</div><div class="stat-card-value" id="statCourses">0</div><div class="stat-card-change">+2 this month</div></div>
+          <div class="stat-card"><div class="stat-card-label">Live Classes</div><div class="stat-card-value" id="statLive">0</div><div class="stat-card-change">Next: Tomorrow</div></div>
+          <div class="stat-card"><div class="stat-card-label">PDF Notes</div><div class="stat-card-value" id="statNotes">0</div><div class="stat-card-change">All downloaded</div></div>
+          <div class="stat-card"><div class="stat-card-label">Certificates</div><div class="stat-card-value" id="statCerts">0</div><div class="stat-card-change">Keep going!</div></div>
+        </div>
+        <h3 style="font-size:16px; margin-bottom:16px; font-weight:600;">Continue Learning</h3>
+        <div id="continueCourses"></div>
+      </div>
+
+      <!-- My Courses -->
+      <div class="dash-section" id="dash-myCourses">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+          <h2 style="font-family:var(--font-display); font-size:26px;">My Courses</h2>
+          <button class="btn-primary" onclick="navigate('courses')">+ Browse More</button>
+        </div>
+        <div class="cards-grid" id="dashCourses"></div>
+      </div>
+
+      <!-- My Notes -->
+      <div class="dash-section" id="dash-myNotes">
+        <h2 style="font-family:var(--font-display); font-size:26px; margin-bottom:24px;">My PDF Notes</h2>
+        <div class="cards-grid" id="dashNotes"></div>
+      </div>
+
+      <!-- Schedule -->
+      <div class="dash-section" id="dash-schedule">
+        <h2 style="font-family:var(--font-display); font-size:26px; margin-bottom:24px;">My Schedule</h2>
+        <div class="schedule-grid" id="dashSchedule"></div>
+      </div>
+
+      <!-- Orders -->
+      <div class="dash-section" id="dash-orders">
+        <h2 style="font-family:var(--font-display); font-size:26px; margin-bottom:24px;">Order History</h2>
+        <div style="background:var(--card); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden;">
+          <table class="table" id="ordersTable">
+            <thead><tr><th>Order ID</th><th>Item</th><th>Type</th><th>Amount</th><th>Date</th><th>Status</th></tr></thead>
+            <tbody id="ordersBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Admin Panel -->
+      <div class="dash-section" id="dash-adminPanel">
+        <h2 style="font-family:var(--font-display); font-size:26px; margin-bottom:24px;">Admin Panel</h2>
+        <div class="admin-tabs">
+          <button class="admin-tab active" onclick="switchAdmin('courses', this)">Courses</button>
+          <button class="admin-tab" onclick="switchAdmin('liveClasses', this)">Live Classes</button>
+          <button class="admin-tab" onclick="switchAdmin('pdfNotes', this)">PDF Notes</button>
+          <button class="admin-tab" onclick="switchAdmin('students', this)">Students</button>
+          <button class="admin-tab" onclick="switchAdmin('revenue', this)">Revenue</button>
+        </div>
+
+        <!-- Admin Courses -->
+        <div class="admin-content active" id="admin-courses">
+          <div style="display:flex; justify-content:space-between; margin-bottom:16px;">
+            <div style="font-size:14px; color:var(--muted);">Manage all courses</div>
+            <button class="btn-primary" onclick="openModal('addCourseModal')">+ Add Course</button>
+          </div>
+          <div style="background:var(--card); border:1px solid var(--border); border-radius:var(--radius); overflow:auto;">
+            <table class="table" id="adminCoursesTable">
+              <thead><tr><th>Title</th><th>Category</th><th>Price</th><th>Students</th><th>Status</th><th>Actions</th></tr></thead>
+              <tbody id="adminCoursesBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Admin Live -->
+        <div class="admin-content" id="admin-liveClasses">
+          <div style="display:flex; justify-content:space-between; margin-bottom:16px;">
+            <div style="font-size:14px; color:var(--muted);">Schedule and manage live classes</div>
+            <button class="btn-primary" onclick="openModal('addLiveModal')">+ Schedule Class</button>
+          </div>
+          <div style="background:var(--card); border:1px solid var(--border); border-radius:var(--radius); overflow:auto;">
+            <table class="table">
+              <thead><tr><th>Title</th><th>Teacher</th><th>Date & Time</th><th>Status</th><th>Registered</th><th>Actions</th></tr></thead>
+              <tbody id="adminLiveBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Admin Notes -->
+        <div class="admin-content" id="admin-pdfNotes">
+          <div style="display:flex; justify-content:space-between; margin-bottom:16px;">
+            <div style="font-size:14px; color:var(--muted);">Manage PDF notes and study materials</div>
+            <button class="btn-primary" onclick="openModal('addNoteModal')">+ Add Notes</button>
+          </div>
+          <div style="background:var(--card); border:1px solid var(--border); border-radius:var(--radius); overflow:auto;">
+            <table class="table">
+              <thead><tr><th>Title</th><th>Subject</th><th>Pages</th><th>Price</th><th>Downloads</th><th>Actions</th></tr></thead>
+              <tbody id="adminNotesBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Admin Students -->
+        <div class="admin-content" id="admin-students">
+          <div style="background:var(--card); border:1px solid var(--border); border-radius:var(--radius); overflow:auto;">
+            <table class="table">
+              <thead><tr><th>Name</th><th>Email</th><th>Courses</th><th>Joined</th><th>Status</th></tr></thead>
+              <tbody id="adminStudentsBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Admin Revenue -->
+        <div class="admin-content" id="admin-revenue">
+          <div class="stats-row" style="grid-template-columns:repeat(3,1fr);">
+            <div class="stat-card"><div class="stat-card-label">Total Revenue</div><div class="stat-card-value">₹1,24,500</div><div class="stat-card-change">+12% this month</div></div>
+            <div class="stat-card"><div class="stat-card-label">This Month</div><div class="stat-card-value">₹18,200</div><div class="stat-card-change">+8% vs last month</div></div>
+            <div class="stat-card"><div class="stat-card-label">Total Students</div><div class="stat-card-value" id="totalStudents">0</div><div class="stat-card-change">Growing steadily</div></div>
+          </div>
+          <div style="background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:24px; margin-top:20px;">
+            <h3 style="margin-bottom:16px; font-size:16px; font-weight:600;">Revenue Breakdown</h3>
+            <div style="display:flex; flex-direction:column; gap:12px;">
+              <div>
+                <div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:6px;"><span>Courses</span><span style="color:var(--teal)">₹89,400 (72%)</span></div>
+                <div class="progress-bar"><div class="progress-fill" style="width:72%; background:var(--teal)"></div></div>
+              </div>
+              <div>
+                <div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:6px;"><span>Live Classes</span><span style="color:var(--blue)">₹21,600 (17%)</span></div>
+                <div class="progress-bar"><div class="progress-fill" style="width:17%; background:var(--blue)"></div></div>
+              </div>
+              <div>
+                <div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:6px;"><span>PDF Notes</span><span style="color:var(--gold)">₹13,500 (11%)</span></div>
+                <div class="progress-bar"><div class="progress-fill" style="width:11%; background:var(--gold)"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── CHECKOUT PAGE ─── -->
+<div class="page" id="page-checkout">
+  <div style="padding:40px;">
+    <h1 style="font-family:var(--font-display); font-size:32px; margin-bottom:8px;">Checkout</h1>
+    <p style="color:var(--muted); margin-bottom:32px;">Complete your purchase</p>
+  </div>
+  <div class="checkout-grid">
+    <div>
+      <h3 style="font-size:16px; font-weight:600; margin-bottom:20px;">Payment Details</h3>
+      <div style="background:var(--card); border:1px solid var(--border); border-radius:16px; padding:24px;">
+        <div class="form-group">
+          <label>Cardholder Name</label>
+          <input type="text" placeholder="John Doe" id="cardName">
+        </div>
+        <div class="form-group">
+          <label>Card Number</label>
+          <input type="text" placeholder="1234 5678 9012 3456" maxlength="19" id="cardNum" oninput="formatCard(this)">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Expiry Date</label>
+            <input type="text" placeholder="MM/YY" maxlength="5" id="cardExpiry">
+          </div>
+          <div class="form-group">
+            <label>CVV</label>
+            <input type="text" placeholder="•••" maxlength="3" id="cardCvv">
+          </div>
+        </div>
+        <div style="background:rgba(0,212,170,0.05); border:1px solid rgba(0,212,170,0.2); border-radius:9px; padding:14px; margin-bottom:20px; font-size:12px; color:var(--teal);">
+          🔒 Your payment is secured with 256-bit SSL encryption
+        </div>
+        <button class="btn-lg btn-gold btn-full" onclick="processPayment()">Pay Now</button>
+      </div>
+
+      <div style="margin-top:20px;">
+        <h3 style="font-size:14px; font-weight:600; margin-bottom:12px; color:var(--muted);">OR PAY WITH UPI</h3>
+        <div style="background:var(--card); border:1px solid var(--border); border-radius:12px; padding:16px;">
+          <div class="form-group" style="margin-bottom:0;">
+            <label>UPI ID</label>
+            <div style="display:flex; gap:10px;">
+              <input type="text" placeholder="yourname@upi" id="upiId" style="flex:1;">
+              <button class="btn-teal btn-sm" onclick="processPayment()" style="white-space:nowrap; padding:10px 16px;">Verify & Pay</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="order-summary">
+        <h3>Order Summary</h3>
+        <div id="checkoutItems"></div>
+        <div class="order-line" style="margin-top:8px;"><span>Subtotal</span><span id="checkoutSubtotal">₹0</span></div>
+        <div class="order-line"><span>Discount</span><span style="color:var(--teal)" id="checkoutDiscount">-₹0</span></div>
+        <div class="order-line"><span>Total</span><span id="checkoutTotal">₹0</span></div>
+      </div>
+      <button class="btn-ghost" style="width:100%; margin-top:12px;" onclick="navigate('home')">← Continue Shopping</button>
+    </div>
+  </div>
+</div>
+
+<!-- ─── CART SIDEBAR ─── -->
+<div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+<div class="cart-sidebar" id="cartSidebar">
+  <div class="cart-head">
+    <h3>🛒 Your Cart</h3>
+    <button class="close-btn" onclick="toggleCart()">✕</button>
+  </div>
+  <div class="cart-items" id="cartItemsList"></div>
+  <div class="cart-footer">
+    <div class="cart-total"><span>Total</span><span id="cartTotal">₹0</span></div>
+    <button class="btn-lg btn-gold btn-full" onclick="goToCheckout()">Proceed to Checkout</button>
+  </div>
+</div>
+
+<!-- ─── MODALS ─── -->
+<!-- Login Modal -->
+<div class="modal-overlay" id="loginModal" onclick="closeModalBg(event, 'loginModal')">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('loginModal')">✕</button>
+    <h2>Welcome back</h2>
+    <p class="modal-sub">Sign in to access your courses and notes</p>
+    <div class="form-group"><label>Email</label><input type="email" placeholder="you [at] email.com" id="loginEmail"></div>
+    <div class="form-group"><label>Password</label><input type="password" placeholder="••••••••" id="loginPassword"></div>
+    <button class="btn-primary btn-full btn-lg" onclick="login()">Sign In</button>
+    <div class="auth-switch">Don't have an account? <a onclick="switchModal('loginModal','signupModal')">Sign up free</a></div>
+  </div>
+</div>
+
+<!-- Signup Modal -->
+<div class="modal-overlay" id="signupModal" onclick="closeModalBg(event, 'signupModal')">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('signupModal')">✕</button>
+    <h2>Create account</h2>
+    <p class="modal-sub">Join 10,000+ students on EduPro</p>
+    <div class="form-row">
+      <div class="form-group"><label>First Name</label><input type="text" placeholder="John" id="signupFirst"></div>
+      <div class="form-group"><label>Last Name</label><input type="text" placeholder="Doe" id="signupLast"></div>
+    </div>
+    <div class="form-group"><label>Email</label><input type="email" placeholder="you [at] email.com" id="signupEmail"></div>
+    <div class="form-group"><label>Password</label><input type="password" placeholder="Min. 6 characters" id="signupPassword"></div>
+    <button class="btn-primary btn-full btn-lg" onclick="signup()">Create Account</button>
+    <div class="auth-switch">Already have an account? <a onclick="switchModal('signupModal','loginModal')">Sign in</a></div>
+  </div>
+</div>
+
+<!-- Add Course Modal -->
+<div class="modal-overlay" id="addCourseModal" onclick="closeModalBg(event, 'addCourseModal')" style="z-index:310;">
+  <div class="modal" style="max-width:560px;">
+    <button class="modal-close" onclick="closeModal('addCourseModal')">✕</button>
+    <h2>Add New Course</h2>
+    <p class="modal-sub">Fill in the details to publish a course</p>
+    <div class="form-group"><label>Course Title</label><input type="text" placeholder="e.g. React.js Complete Guide" id="newCourseTitle"></div>
+    <div class="form-group"><label>Description</label><textarea placeholder="Brief description of the course..." id="newCourseDesc"></textarea></div>
+    <div class="form-row">
+      <div class="form-group"><label>Category</label>
+        <select id="newCourseCat">
+          <option>Programming</option><option>Design</option><option>Data Science</option><option>DevOps</option><option>Business</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Price (₹)</label><input type="number" placeholder="999" id="newCoursePrice"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Duration</label><input type="text" placeholder="20 hours" id="newCourseDuration"></div>
+      <div class="form-group"><label>Instructor</label><input type="text" placeholder="Instructor name" id="newCourseInstructor"></div>
+    </div>
+    <button class="btn-primary btn-full btn-lg" onclick="addCourse()">Publish Course</button>
+  </div>
+</div>
+
+<!-- Add Live Class Modal -->
+<div class="modal-overlay" id="addLiveModal" onclick="closeModalBg(event, 'addLiveModal')" style="z-index:310;">
+  <div class="modal" style="max-width:520px;">
+    <button class="modal-close" onclick="closeModal('addLiveModal')">✕</button>
+    <h2>Schedule Live Class</h2>
+    <p class="modal-sub">Set up a new live session</p>
+    <div class="form-group"><label>Session Title</label><input type="text" placeholder="e.g. Python Basics: Variables & Loops" id="newLiveTitle"></div>
+    <div class="form-row">
+      <div class="form-group"><label>Date</label><input type="date" id="newLiveDate"></div>
+      <div class="form-group"><label>Time</label><input type="time" id="newLiveTime"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Duration (mins)</label><input type="number" placeholder="60" id="newLiveDuration"></div>
+      <div class="form-group"><label>Price (₹)</label><input type="number" placeholder="299" id="newLivePrice"></div>
+    </div>
+    <div class="form-group"><label>Teacher</label><input type="text" placeholder="Teacher name" id="newLiveTeacher"></div>
+    <div class="form-group"><label>Meeting Link</label><input type="url" placeholder="https://meet.google.com/..." id="newLiveLink"></div>
+    <button class="btn-primary btn-full btn-lg" onclick="addLiveClass()">Schedule Class</button>
+  </div>
+</div>
+
+<!-- Add Note Modal -->
+<div class="modal-overlay" id="addNoteModal" onclick="closeModalBg(event, 'addNoteModal')" style="z-index:310;">
+  <div class="modal" style="max-width:520px;">
+    <button class="modal-close" onclick="closeModal('addNoteModal')">✕</button>
+    <h2>Add PDF Notes</h2>
+    <p class="modal-sub">Upload study material for students</p>
+    <div class="form-group"><label>Notes Title</label><input type="text" placeholder="e.g. Data Structures Complete Notes" id="newNoteTitle"></div>
+    <div class="form-row">
+      <div class="form-group"><label>Subject</label>
+        <select id="newNoteCat">
+          <option>Programming</option><option>Mathematics</option><option>Science</option><option>Competitive</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Price (₹)</label><input type="number" placeholder="199" id="newNotePrice"></div>
+    </div>
+    <div class="form-group"><label>Pages</label><input type="number" placeholder="50" id="newNotePages"></div>
+    <div class="form-group">
+      <label>PDF File</label>
+      <div id="uploadArea" onclick="document.getElementById('newNoteFile').click()" style="border:2px dashed var(--border);border-radius:10px;padding:24px;text-align:center;cursor:pointer;transition:all .2s;background:var(--bg3);" onmouseover="this.style.borderColor='var(--teal)'" onmouseout="this.style.borderColor='var(--border)'">
+        <div style="font-size:28px;margin-bottom:8px;">📎</div>
+        <div id="uploadLabel" style="font-size:13px;color:var(--muted);">Click to select PDF file</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:4px;">Only .pdf files accepted</div>
+      </div>
+      <input type="file" accept=".pdf" id="newNoteFile" style="display:none;" onchange="handleFileSelect(this)">
+    </div>
+    <button class="btn-primary btn-full btn-lg" onclick="addNote()">Upload Notes</button>
+  </div>
+</div>
+
+<!-- Toast container -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+// ═══════════════════════════════════════════════════
+// DATA STORE
+// ═══════════════════════════════════════════════════
+const API = 'http://localhost:5000/api';
+
+let state = {
+  user: JSON.parse(localStorage.getItem('epUser')) || null,
+  cart: JSON.parse(localStorage.getItem('epCart')) || [],
+  courses: [],
+  liveClasses: [],
+  notes: [],
+  orders: [],
+  activeFilter: 'all',
+  activeLiveFilter: 'all',
+  activeNoteFilter: 'all',
+  currentCourse: null,
+};
+
+// Sample data (loaded when API not available)
+const sampleCourses = [
+  { _id:'c1', title:'React.js Complete Guide 2024', category:'programming', emoji:'⚛️', thumb:'thumb-blue', price:1299, oldPrice:2999, rating:4.9, students:2847, duration:'32 hrs', lessons:148, instructor:'Rahul Sharma', description:'Master React.js from scratch with hooks, context, Redux, and real-world projects. Build production-ready applications.', includes:['32 hours on-demand video','12 projects','Lifetime access','Certificate'], curriculum:[{title:'Getting Started',lessons:['Introduction to React','Setting up environment','Your first component','JSX in depth']},{title:'Core Concepts',lessons:['State & Props','Event Handling','Lists & Keys','Forms in React']},{title:'Advanced Topics',lessons:['React Hooks','Context API','Performance Optimization','Testing React Apps']}] },
+  { _id:'c2', title:'Python for Data Science', category:'data science', emoji:'🐍', thumb:'thumb-green', price:999, oldPrice:1999, rating:4.8, students:4200, duration:'28 hrs', lessons:120, instructor:'Priya Patel', description:'Learn Python programming for data analysis, visualization, and machine learning with real datasets.', includes:['28 hours video','Jupyter notebooks','Datasets included','Certificate'], curriculum:[{title:'Python Basics',lessons:['Variables & Types','Control Flow','Functions','OOP in Python']},{title:'Data Analysis',lessons:['NumPy Fundamentals','Pandas Deep Dive','Data Visualization','Exploratory Analysis']}] },
+  { _id:'c3', title:'UI/UX Design Masterclass', category:'design', emoji:'🎨', thumb:'thumb-purple', price:1499, oldPrice:3499, rating:4.7, students:1823, duration:'24 hrs', lessons:96, instructor:'Ananya Singh', description:'Complete UI/UX design course covering user research, wireframing, Figma, and building a portfolio.', includes:['24 hours video','Figma assets','Portfolio projects','Certificate'], curriculum:[{title:'Design Principles',lessons:['Color Theory','Typography','Grid Systems','Visual Hierarchy']},{title:'Figma Mastery',lessons:['Figma Basics','Components','Auto Layout','Prototyping']}] },
+  { _id:'c4', title:'Node.js & MongoDB Backend', category:'programming', emoji:'🟢', thumb:'thumb-teal', price:1199, oldPrice:2499, rating:4.8, students:3150, duration:'26 hrs', lessons:110, instructor:'Vikram Reddy', description:'Build scalable REST APIs with Node.js, Express, and MongoDB. Includes authentication, deployment, and cloud integration.', includes:['26 hours video','Source code','API collection','Certificate'], curriculum:[{title:'Node.js Basics',lessons:['What is Node.js','npm Ecosystem','File System','HTTP Module']},{title:'Express & MongoDB',lessons:['Express Setup','REST API Design','MongoDB CRUD','Authentication']}] },
+  { _id:'c5', title:'AWS Cloud Practitioner', category:'devops', emoji:'☁️', thumb:'thumb-orange', price:1799, oldPrice:3999, rating:4.9, students:980, duration:'20 hrs', lessons:85, instructor:'Amit Kumar', description:'Prepare for the AWS Cloud Practitioner certification. Covers core AWS services, architecture, and best practices.', includes:['20 hours video','Practice exams','Study notes','Certificate'], curriculum:[{title:'Cloud Fundamentals',lessons:['What is Cloud Computing','AWS Global Infrastructure','Core Services Overview','Pricing Model']},{title:'AWS Services',lessons:['EC2 & S3','RDS & DynamoDB','Lambda & API Gateway','CloudWatch']}] },
+  { _id:'c6', title:'Digital Marketing Bootcamp', category:'business', emoji:'📈', thumb:'thumb-pink', price:799, oldPrice:1799, rating:4.6, students:2200, duration:'18 hrs', lessons:80, instructor:'Neha Gupta', description:'Learn SEO, social media marketing, email campaigns, paid ads, and analytics to grow any business online.', includes:['18 hours video','Templates & tools','Case studies','Certificate'], curriculum:[{title:'Marketing Basics',lessons:['Digital Marketing Intro','Customer Psychology','Brand Building','Content Strategy']},{title:'Channels',lessons:['SEO Fundamentals','Social Media','Email Marketing','Google Ads']}] },
+  { _id:'c7', title:'Machine Learning A-Z', category:'data science', emoji:'🤖', thumb:'thumb-red', price:1599, oldPrice:3499, rating:4.9, students:3800, duration:'40 hrs', lessons:180, instructor:'Dr. Sandeep Mehta', description:'Complete machine learning course with Python, covering supervised, unsupervised, and deep learning algorithms.', includes:['40 hours video','Datasets','Jupyter notebooks','Certificate'], curriculum:[{title:'ML Foundations',lessons:['Intro to ML','Data Preprocessing','Linear Regression','Logistic Regression']},{title:'Advanced ML',lessons:['Decision Trees','Neural Networks','CNN Basics','Model Deployment']}] },
+  { _id:'c8', title:'DevOps & CI/CD Pipeline', category:'devops', emoji:'🔧', thumb:'thumb-gold', price:1399, oldPrice:2999, rating:4.7, students:1200, duration:'22 hrs', lessons:95, instructor:'Kiran Bhatia', description:'Master DevOps practices with Docker, Kubernetes, Jenkins, and GitHub Actions for modern software delivery.', includes:['22 hours video','Lab environments','Project files','Certificate'], curriculum:[{title:'DevOps Basics',lessons:['DevOps Philosophy','Linux Fundamentals','Git & GitHub','Docker Basics']},{title:'Orchestration',lessons:['Docker Compose','Kubernetes Core','CI/CD with Jenkins','GitHub Actions']}] },
+];
+
+const sampleLive = [
+  { _id:'l1', title:'Python Crash Course: Beginners Welcome', teacher:'Priya Patel', date:'2024-12-15', time:'6:00 PM', duration:90, status:'live', price:0, registered:142, link:'https://meet.google.com/abc-defg-hij' },
+  { _id:'l2', title:'React Hooks Deep Dive', teacher:'Rahul Sharma', date:'2024-12-16', time:'7:00 PM', duration:60, status:'upcoming', price:299, registered:87, link:'https://meet.google.com/xyz-abcd-efg' },
+  { _id:'l3', title:'System Design Interview Prep', teacher:'Vikram Reddy', date:'2024-12-17', time:'8:00 PM', duration:120, status:'upcoming', price:499, registered:203, link:'https://meet.google.com/pqr-stuv-wxy' },
+  { _id:'l4', title:'ML Model Deployment on AWS', teacher:'Dr. Sandeep Mehta', date:'2024-12-18', time:'5:00 PM', duration:90, status:'upcoming', price:399, registered:64, link:'https://meet.google.com/lmn-opqr-stu' },
+  { _id:'l5', title:'Figma Advanced: Auto Layout & Components', teacher:'Ananya Singh', date:'2024-12-19', time:'6:30 PM', duration:75, status:'upcoming', price:199, registered:115, link:'https://meet.google.com/vwx-yzab-cde' },
+  { _id:'l6', title:'DSA in Python: Sorting Algorithms', teacher:'Amit Kumar', date:'2024-12-14', time:'7:00 PM', duration:90, status:'recorded', price:149, registered:320, link:'#' },
+];
+
+const sampleNotes = [
+  { _id:'n1', title:'Complete DSA Handbook', subject:'programming', emoji:'📘', pages:124, price:299, downloads:1840 },
+  { _id:'n2', title:'React Cheat Sheet 2024', subject:'programming', emoji:'⚛️', pages:28, price:99, downloads:3200 },
+  { _id:'n3', title:'Calculus Notes — Integrals & Derivatives', subject:'mathematics', emoji:'📐', pages:86, price:199, downloads:940 },
+  { _id:'n4', title:'Physics Formula Sheets (JEE)', subject:'science', emoji:'⚡', pages:48, price:149, downloads:2100 },
+  { _id:'n5', title:'SQL Mastery Notes', subject:'programming', emoji:'🗄️', pages:64, price:179, downloads:1520 },
+  { _id:'n6', title:'GATE CS Previous Year Solutions', subject:'competitive', emoji:'🏆', pages:200, price:399, downloads:780 },
+  { _id:'n7', title:'Statistics for Data Science', subject:'mathematics', emoji:'📊', pages:72, price:249, downloads:650 },
+  { _id:'n8', title:'Chemistry Organic Reactions', subject:'science', emoji:'🧪', pages:55, price:129, downloads:1100 },
+];
+
+const sampleStudents = [
+  { name:'Arjun Malhotra', email:'arjun_at_email', courses:4, joined:'Nov 2024', status:'active' },
+  { name:'Sneha Verma', email:'sneha_at_email', courses:2, joined:'Oct 2024', status:'active' },
+  { name:'Rohit Gupta', email:'rohit_at_email', courses:7, joined:'Sep 2024', status:'active' },
+  { name:'Kavya Nair', email:'kavya_at_email', courses:1, joined:'Dec 2024', status:'active' },
+  { name:'Dhruv Shah', email:'dhruv_at_email', courses:3, joined:'Oct 2024', status:'inactive' },
+];
+
+// ═══════════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════════
+function navigate(page, data) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+  const pageEl = document.getElementById('page-' + page);
+  if (pageEl) { pageEl.classList.add('active'); window.scrollTo(0,0); }
+  const navEl = document.getElementById('nav-' + page);
+  if (navEl) navEl.classList.add('active');
+  if (page === 'courseDetail' && data) showCourseDetail(data);
+  if (page === 'dashboard') renderDashboard();
+  if (page === 'checkout') renderCheckout();
+}
+
+// ═══════════════════════════════════════════════════
+// LOAD DATA
+// ═══════════════════════════════════════════════════
+async function loadData() {
+  try {
+    const [cr, lv, nt] = await Promise.all([
+      fetch(API+'/courses').then(r=>r.ok?r.json():null),
+      fetch(API+'/live-classes').then(r=>r.ok?r.json():null),
+      fetch(API+'/notes').then(r=>r.ok?r.json():null),
+    ]);
+    state.courses = cr && cr.length ? cr : sampleCourses;
+    state.liveClasses = lv && lv.length ? lv : sampleLive;
+    state.notes = nt && nt.length ? nt : sampleNotes;
+  } catch {
+    state.courses = sampleCourses;
+    state.liveClasses = sampleLive;
+    state.notes = sampleNotes;
+  }
+  renderHome();
+  renderCourses();
+  renderLive();
+  renderNotes();
+  updateCartUI();
+}
+
+// ═══════════════════════════════════════════════════
+// RENDER HOME
+// ═══════════════════════════════════════════════════
+function renderHome() {
+  const hc = document.getElementById('homeCourses');
+  if (hc) hc.innerHTML = state.courses.slice(0,4).map(courseCard).join('');
+  const hl = document.getElementById('homeLive');
+  if (hl) hl.innerHTML = state.liveClasses.slice(0,3).map(liveCard).join('');
+}
+
+// ═══════════════════════════════════════════════════
+// COURSES
+// ═══════════════════════════════════════════════════
+function courseCard(c) {
+  return `<div class="course-card" onclick="navigate('courseDetail','${c._id}')">
+    <div class="course-thumb ${c.thumb}">
+      <span style="font-size:52px;">${c.emoji}</span>
+      <div class="course-badge">⭐ ${c.rating}</div>
+    </div>
+    <div class="course-body">
+      <div class="course-category">${c.category}</div>
+      <div class="course-title">${c.title}</div>
+      <div class="course-meta">
+        <span>🎬 ${c.lessons} lessons</span>
+        <span>⏱ ${c.duration}</span>
+        <span>👤 ${(c.students/1000).toFixed(1)}k</span>
+      </div>
+      <div class="course-footer">
+        <div>
+          <span class="course-price">₹${c.price}</span>
+          <span class="course-price-old">₹${c.oldPrice}</span>
+        </div>
+        <button class="btn-sm btn-teal" onclick="event.stopPropagation();addToCart(${JSON.stringify(c).replace(/"/g,'&quot;')})">Add to Cart</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderCourses() {
+  filterCourses();
+}
+
+let catFilter = 'all';
+function setCatFilter(cat, btn) {
+  catFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  filterCourses();
+}
+
+function filterCourses() {
+  const search = document.getElementById('courseSearch')?.value.toLowerCase() || '';
+  const filtered = state.courses.filter(c => {
+    const matchCat = catFilter === 'all' || c.category === catFilter;
+    const matchSearch = c.title.toLowerCase().includes(search) || c.category.toLowerCase().includes(search);
+    return matchCat && matchSearch;
+  });
+  const el = document.getElementById('allCourses');
+  if (el) el.innerHTML = filtered.length ? filtered.map(courseCard).join('') :
+    '<div class="empty-state"><div class="empty-state-icon">🔍</div><h3>No courses found</h3><p>Try a different search or filter</p></div>';
+}
+
+// ═══════════════════════════════════════════════════
+// COURSE DETAIL
+// ═══════════════════════════════════════════════════
+function showCourseDetail(id) {
+  const c = state.courses.find(x => x._id === id);
+  if (!c) return;
+  state.currentCourse = c;
+  document.getElementById('detailCategory').textContent = c.category;
+  document.getElementById('detailTitle').textContent = c.title;
+  document.getElementById('detailDesc').textContent = c.description;
+  document.getElementById('detailPrice').textContent = '₹' + c.price;
+  document.getElementById('detailMeta').innerHTML = `
+    <span>⭐ ${c.rating} rating</span>
+    <span>👤 ${c.students.toLocaleString()} students</span>
+    <span>⏱ ${c.duration}</span>
+    <span>🎬 ${c.lessons} lessons</span>
+    <span>👨‍🏫 ${c.instructor}</span>`;
+  document.getElementById('detailIncludes').innerHTML = c.includes.map(i => `<div style="color:var(--muted);">✓ ${i}</div>`).join('');
+  document.getElementById('detailCurriculum').innerHTML = (c.curriculum||[]).map((m,i) => `
+    <div class="module">
+      <div class="module-header">📁 ${m.title} <span style="color:var(--muted); font-size:12px;">${m.lessons.length} lessons</span></div>
+      <div class="module-lessons">
+        ${m.lessons.map(l => `<div class="lesson"><span class="lesson-icon">▶</span>${l}</div>`).join('')}
+      </div>
+    </div>`).join('');
+}
+
+function enrollCourse() {
+  if (!state.currentCourse) return;
+  addToCart(state.currentCourse);
+}
+
+// ═══════════════════════════════════════════════════
+// LIVE CLASSES
+// ═══════════════════════════════════════════════════
+function liveCard(l) {
+  const d = new Date(l.date);
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const isLive = l.status === 'live';
+  const isRec = l.status === 'recorded';
+  const statusLabel = isLive ? '<span class="live-status live-now"><span class="live-dot"></span>LIVE NOW</span>' :
+    isRec ? '<span class="live-status" style="background:rgba(107,114,128,0.15);color:var(--muted)">⏪ RECORDED</span>' :
+    '<span class="live-status upcoming">📅 UPCOMING</span>';
+  const btn = isLive ?
+    `<a href="${l.link}" target="_blank" class="btn-sm btn-coral" onclick="event.stopPropagation()">Join Now</a>` :
+    isRec ?
+    `<button class="btn-sm" style="background:var(--bg3);border:1px solid var(--border);color:var(--text);" onclick="event.stopPropagation();addToCart(${JSON.stringify({...l,type:'live',price:l.price}).replace(/"/g,'&quot;')})">Watch ₹${l.price}</button>` :
+    `<button class="btn-sm btn-blue" onclick="event.stopPropagation();addToCart(${JSON.stringify({...l,type:'live',emoji:'📡',thumb:'thumb-blue'}).replace(/"/g,'&quot;')})">Register ₹${l.price || 'Free'}</button>`;
+  return `<div class="live-card">
+    <div class="live-time-box">
+      <div class="live-time-day">${days[d.getDay()]}</div>
+      <div class="live-time-date">${d.getDate()}</div>
+      <div class="live-time-month">${months[d.getMonth()]}</div>
+    </div>
+    <div class="live-info">
+      ${statusLabel}
+      <div class="live-title">${l.title}</div>
+      <div class="live-teacher">👨‍🏫 ${l.teacher}</div>
+      <div class="live-meta"><span>🕐 ${l.time}</span><span>⏱ ${l.duration} min</span><span>👥 ${l.registered} registered</span></div>
+    </div>
+    <div class="live-action">${btn}</div>
+  </div>`;
+}
+
+let liveFilter = 'all';
+function setLiveFilter(f, btn) {
+  liveFilter = f;
+  document.querySelectorAll('.pill-tab').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  renderLive();
+}
+
+function renderLive() {
+  const filtered = liveFilter === 'all' ? state.liveClasses :
+    state.liveClasses.filter(l => l.status === liveFilter);
+  const el = document.getElementById('allLive');
+  if (el) el.innerHTML = filtered.length ? filtered.map(liveCard).join('') :
+    '<div class="empty-state"><div class="empty-state-icon">📅</div><h3>No classes found</h3><p>Check back soon for new sessions</p></div>';
+}
+
+// ═══════════════════════════════════════════════════
+// RENDER NOTES PAGE
+// ═══════════════════════════════════════════════════
+function renderNotes() {
+  const filtered = state.activeNoteFilter === 'all'
+    ? state.notes
+    : state.notes.filter(n => n.subject === state.activeNoteFilter);
+  const el = document.getElementById('allNotes');
+  if (!el) return;
+  el.innerHTML = filtered.length
+    ? filtered.map(n => noteCard(n, false)).join('')
+    : '<div class="empty-state" style="grid-column:1/-1"><div class="empty-state-icon">📄</div><h3>No notes found</h3><p>Try a different filter</p></div>';
+}
+
+function setNoteFilter(filter, btn) {
+  state.activeNoteFilter = filter;
+  document.querySelectorAll('#page-notes .filter-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  renderNotes();
+}
+
+// ═══════════════════════════════════════════════════
+// PDF NOTES
+// ═══════════════════════════════════════════════════
+function noteCard(n, showDownload) {
+  const colors = {programming:'thumb-blue',mathematics:'thumb-purple',science:'thumb-green',competitive:'thumb-orange'};
+  const isPurchased = showDownload || (state.user && (state.user.purchasedNotes||[]).includes(n._id));
+  const actionBtn = isPurchased
+    ? `<button class="btn-sm btn-teal" onclick="downloadNote('${n._id}','${n.title.replace(/'/g,"\\'")}')">⬇️ Download</button>`
+    : `<button class="btn-sm btn-teal" onclick="addToCart(${JSON.stringify({...n,type:'note',emoji:n.emoji,thumb:colors[n.subject]||'thumb-blue'}).replace(/"/g,'&quot;')})">Buy Now</button>`;
+  return `<div class="note-card">
+    <div class="note-preview ${colors[n.subject]||'thumb-blue'}">
+      <div class="note-preview-icon">${n.emoji}</div>
+      <div class="note-pages">${n.pages} pages</div>
+    </div>
+    <div class="note-body">
+      <div class="note-subject">${n.subject}</div>
+      <div class="note-title">${n.title}</div>
+      <div style="font-size:11px; color:var(--muted);">⬇️ ${n.downloads.toLocaleString()} downloads</div>
+      <div class="note-footer">
+        <span class="note-price">${n.price === 0 ? '<span style=\"color:var(--teal)\">Free</span>' : '₹' + n.price}</span>
+        ${actionBtn}
+      </div>
+    </div>
+  </div>`;
+}
+
+function downloadNote(id, title) {
+  // Check localStorage first (uploaded via Admin Panel)
+  var stored = localStorage.getItem('pdf_' + id);
+  if (stored) {
+    var link = document.createElement('a');
+    link.href = stored;
+    link.download = title + '.pdf';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    toast('Downloading "' + title + '"! 📥', 'success');
+    return;
+  }
+
+  // Try server API
+  var token = localStorage.getItem('epToken');
+  if (token) {
+    var url = 'http://localhost:5000/api/notes/' + id + '/download';
+    fetch(url, { headers: { 'Authorization': 'Bearer ' + token } })
+      .then(function(r) {
+        if (r.ok) return r.blob();
+        throw new Error('no file');
+      })
+      .then(function(blob) {
+        var blobUrl = URL.createObjectURL(blob);
+        var link = document.createElement('a');
+        link.href = blobUrl;
+        link.download = title + '.pdf';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(blobUrl);
+        toast('Downloading "' + title + '"! 📥', 'success');
+      })
+      .catch(function() {
+        generateSamplePDF(title);
+      });
+    return;
+  }
+
+  generateSamplePDF(title);
+}
+function generateSamplePDF(title) {
+  var lines = [
+    'EduPro PDF Notes',
+    '================',
+    '',
+    'Title: ' + title,
+    '',
+    'Thank you for purchasing this note!',
+    '',
+    'To get the real PDF:',
+    '1. Login as Admin',
+    '2. Go to Admin Panel > PDF Notes',
+    '3. Click Edit and upload the PDF file',
+    '',
+    'EduPro - Learn Without Limits'
+  ];
+  var text = lines.join(String.fromCharCode(10));
+  var blob = new Blob([text], { type: 'text/plain' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = title + '_notes.txt';
+  a.click();
+  URL.revokeObjectURL(url);
+  toast('Downloaded! Upload real PDF via Admin Panel for actual content. 📄', 'success');
+}
+// ═══════════════════════════════════════════════════
+// CART
+// ═══════════════════════════════════════════════════
+function addToCart(item) {
+  if (state.cart.find(i => i._id === item._id)) { toast('Already in cart!', 'error'); return; }
+  const cartItem = { _id: item._id, name: item.title || item.name || item.title, price: item.price, emoji: item.emoji || '📦', type: item.type || 'course' };
+  state.cart.push(cartItem);
+  saveCart();
+  updateCartUI();
+  toast(`Added "${cartItem.name}" to cart! 🛒`, 'success');
+}
+
+function removeFromCart(id) {
+  state.cart = state.cart.filter(i => i._id !== id);
+  saveCart();
+  updateCartUI();
+}
+
+function saveCart() {
+  localStorage.setItem('epCart', JSON.stringify(state.cart));
+}
+
+function updateCartUI() {
+  const count = state.cart.length;
+  document.getElementById('cartCount').textContent = count;
+  const total = state.cart.reduce((s,i) => s + i.price, 0);
+  document.getElementById('cartTotal').textContent = '₹' + total;
+  const list = document.getElementById('cartItemsList');
+  if (list) {
+    list.innerHTML = state.cart.length ? state.cart.map(i => `
+      <div class="cart-item">
+        <div class="cart-item-icon">${i.emoji}</div>
+        <div class="cart-item-info">
+          <div class="cart-item-name">${i.name}</div>
+          <div class="cart-item-type">${i.type}</div>
+        </div>
+        <div class="cart-item-price">₹${i.price}</div>
+        <button class="cart-remove" onclick="removeFromCart('${i._id}')">✕</button>
+      </div>`).join('') :
+      '<div class="empty-state"><div class="empty-state-icon">🛒</div><h3>Cart is empty</h3><p>Add courses or notes to get started</p></div>';
+  }
+}
+
+function toggleCart() {
+  document.getElementById('cartOverlay').classList.toggle('open');
+  document.getElementById('cartSidebar').classList.toggle('open');
+}
+
+function goToCheckout() {
+  if (!state.cart.length) { toast('Your cart is empty!', 'error'); return; }
+  if (!state.user) { openModal('loginModal'); return; }
+  toggleCart();
+  navigate('checkout');
+}
+
+// ═══════════════════════════════════════════════════
+// CHECKOUT
+// ═══════════════════════════════════════════════════
+function renderCheckout() {
+  const items = document.getElementById('checkoutItems');
+  const subtotal = state.cart.reduce((s,i) => s+i.price, 0);
+  const discount = Math.round(subtotal * 0.1);
+  if (items) items.innerHTML = state.cart.map(i => `
+    <div class="order-line"><span>${i.emoji} ${i.name}</span><span>₹${i.price}</span></div>`).join('');
+  document.getElementById('checkoutSubtotal').textContent = '₹' + subtotal;
+  document.getElementById('checkoutDiscount').textContent = '-₹' + discount;
+  document.getElementById('checkoutTotal').textContent = '₹' + (subtotal - discount);
+}
+
+function formatCard(el) {
+  let v = el.value.replace(/\D/g,'');
+  el.value = v.replace(/(.{4})/g,'$1 ').trim().slice(0,19);
+}
+
+async function processPayment() {
+  if (!state.cart.length) { toast('Your cart is empty!', 'error'); return; }
+  const total = state.cart.reduce((s,i) => s+i.price, 0);
+  // Show loading
+  const btn = event.target;
+  btn.textContent = '⏳ Processing...';
+  btn.disabled = true;
+  // Simulate payment
+  await new Promise(r => setTimeout(r, 1800));
+  // Record orders
+  state.cart.forEach(item => {
+    state.orders.push({ id:'ORD'+Date.now(), item: item.name, type: item.type, amount: item.price, date: new Date().toLocaleDateString('en-IN'), status: 'Success' });
+    // Add to my courses/notes — directly use item._id, no lookup needed
+    if (!state.user.enrolledCourses) state.user.enrolledCourses = [];
+    if (!state.user.purchasedNotes) state.user.purchasedNotes = [];
+    if (item.type === 'course' && !state.user.enrolledCourses.includes(item._id)) {
+      state.user.enrolledCourses.push(item._id);
+    }
+    if (item.type === 'note' && !state.user.purchasedNotes.includes(item._id)) {
+      state.user.purchasedNotes.push(item._id);
+    }
+  });
+  localStorage.setItem('epUser', JSON.stringify(state.user));
+  state.cart = [];
+  saveCart();
+  updateCartUI();
+  btn.textContent = '✓ Payment Successful!';
+  btn.style.background = 'var(--teal)';
+  toast('🎉 Payment successful! Check your dashboard.', 'success');
+  setTimeout(() => { navigate('dashboard'); }, 2000);
+}
+
+// ═══════════════════════════════════════════════════
+// AUTH
+// ═══════════════════════════════════════════════════
+async function login() {
+  const email = document.getElementById('loginEmail').value;
+  const password = document.getElementById('loginPassword').value;
+  if (!email || !password) { toast('Please fill all fields', 'error'); return; }
+  try {
+    const res = await fetch(API+'/auth/login', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({email,password}) });
+    const data = await res.json();
+    if (res.ok) { setUser(data.user, data.token); closeModal('loginModal'); toast('Welcome back! 👋', 'success'); }
+    else { toast(data.message || 'Login failed', 'error'); }
+  } catch {
+    // Mock login
+    const mockUser = { _id:'u1', name: email.split('@')[0], email, role: email.includes('admin') ? 'admin' : 'student', enrolledCourses:['c1','c2'], purchasedNotes:['n1'], avatar: email[0].toUpperCase() };
+    setUser(mockUser, 'mock-token'); closeModal('loginModal'); toast('Welcome back! 👋', 'success');
+  }
+}
+
+async function signup() {
+  const first = document.getElementById('signupFirst').value;
+  const last = document.getElementById('signupLast').value;
+  const email = document.getElementById('signupEmail').value;
+  const password = document.getElementById('signupPassword').value;
+  if (!first||!email||!password) { toast('Please fill all required fields', 'error'); return; }
+  try {
+    const res = await fetch(API+'/auth/register', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({name:`${first} ${last}`,email,password}) });
+    const data = await res.json();
+    if (res.ok) { setUser(data.user, data.token); closeModal('signupModal'); toast('Account created! Welcome to EduPro 🎉', 'success'); }
+    else { toast(data.message || 'Registration failed', 'error'); }
+  } catch {
+    const mockUser = { _id:'u'+Date.now(), name:`${first} ${last}`, email, role:'student', enrolledCourses:[], purchasedNotes:[], avatar: first[0].toUpperCase() };
+    setUser(mockUser, 'mock-token'); closeModal('signupModal'); toast('Account created! Welcome to EduPro 🎉', 'success');
+  }
+}
+
+function setUser(user, token) {
+  state.user = user;
+  localStorage.setItem('epUser', JSON.stringify(user));
+  if (token) localStorage.setItem('epToken', token);
+  document.getElementById('authButtons').style.display = 'none';
+  document.getElementById('userMenu').style.display = 'flex';
+  document.getElementById('userAvatar').textContent = user.avatar || user.name[0].toUpperCase();
+  if (user.role === 'admin') document.getElementById('adminLink').style.display = 'flex';
+}
+
+function logout() {
+  state.user = null;
+  localStorage.removeItem('epUser');
+  localStorage.removeItem('epToken');
+  document.getElementById('authButtons').style.display = 'flex';
+  document.getElementById('userMenu').style.display = 'none';
+  document.getElementById('adminLink').style.display = 'none';
+  navigate('home');
+  toast('Logged out successfully', 'success');
+}
+
+// ═══════════════════════════════════════════════════
+// DASHBOARD
+// ═══════════════════════════════════════════════════
+function renderDashboard() {
+  if (!state.user) { navigate('home'); openModal('loginModal'); return; }
+  const u = state.user;
+  document.getElementById('dashName').textContent = u.name;
+  document.getElementById('dashEmail').textContent = u.email;
+  document.getElementById('dashAvatar').textContent = u.avatar || u.name[0].toUpperCase();
+  document.getElementById('dashWelcomeName').textContent = u.name.split(' ')[0];
+  const enrolled = (u.enrolledCourses||[]);
+  const purchased = (u.purchasedNotes||[]);
+  document.getElementById('statCourses').textContent = enrolled.length;
+  document.getElementById('statNotes').textContent = purchased.length;
+  document.getElementById('statLive').textContent = state.liveClasses.filter(l=>l.status==='live').length;
+  document.getElementById('statCerts').textContent = Math.floor(enrolled.length * 0.5);
+  // Continue courses
+  const cc = document.getElementById('continueCourses');
+  if (cc) {
+    const myCourses = state.courses.filter(c => enrolled.includes(c._id));
+    cc.innerHTML = myCourses.length ? myCourses.map(c => `
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px;display:flex;gap:14px;align-items:center;">
+        <div style="width:50px;height:50px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:24px;" class="${c.thumb}">${c.emoji}</div>
+        <div style="flex:1">
+          <div style="font-size:14px;font-weight:600;margin-bottom:4px;">${c.title}</div>
+          <div class="progress-bar"><div class="progress-fill" style="width:${Math.floor(Math.random()*70+20)}%"></div></div>
+          <div style="font-size:11px;color:var(--muted);margin-top:4px;">${Math.floor(Math.random()*70+20)}% complete</div>
+        </div>
+        <button class="btn-sm btn-teal" onclick="navigate('courseDetail','${c._id}')">Continue</button>
+      </div>`).join('') :
+      '<div class="empty-state"><div class="empty-state-icon">🎓</div><h3>No courses yet</h3><p>Browse and enroll in courses to see them here</p></div>';
+  }
+  // My Courses grid
+  const dc = document.getElementById('dashCourses');
+  const myCourses = state.courses.filter(c => enrolled.includes(c._id));
+  if (dc) dc.innerHTML = myCourses.length ? myCourses.map(courseCard).join('') :
+    '<div class="empty-state" style="grid-column:1/-1"><div class="empty-state-icon">🎓</div><h3>No enrolled courses</h3><p><a href="#" onclick="navigate(\'courses\')" style="color:var(--teal)">Browse courses</a> to get started</p></div>';
+  // My Notes
+  const dn = document.getElementById('dashNotes');
+  const myNotes = state.notes.filter(n => purchased.includes(n._id));
+  if (dn) dn.innerHTML = myNotes.length ? myNotes.map(n => noteCard(n, true)).join('') :
+    '<div class="empty-state" style="grid-column:1/-1"><div class="empty-state-icon">📄</div><h3>No purchased notes</h3><p><a href="#" onclick="navigate(\'notes\')" style="color:var(--teal)">Browse notes</a> to buy some</p></div>';
+  // Schedule
+  const ds = document.getElementById('dashSchedule');
+  if (ds) ds.innerHTML = state.liveClasses.map(liveCard).join('');
+  // Orders
+  const ob = document.getElementById('ordersBody');
+  if (ob) ob.innerHTML = state.orders.length ? state.orders.map(o => `
+    <tr><td>${o.id}</td><td>${o.item}</td><td><span class="badge badge-blue">${o.type}</span></td><td>₹${o.amount}</td><td>${o.date}</td><td><span class="badge badge-green">${o.status}</span></td></tr>`).join('') :
+    '<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:32px;">No orders yet</td></tr>';
+  // Admin tables
+  if (u.role === 'admin') {
+    const acb = document.getElementById('adminCoursesBody');
+    if (acb) acb.innerHTML = state.courses.map(c => `
+      <tr><td><strong>${c.title}</strong></td><td>${c.category}</td><td>₹${c.price}</td><td>${c.students}</td><td><span class="badge badge-green">Active</span></td><td>
+        <button class="btn-sm" style="background:var(--bg3);border:1px solid var(--border);color:var(--muted);" onclick="deleteCourse('${c._id}')">Delete</button>
+      </td></tr>`).join('');
+    const alb = document.getElementById('adminLiveBody');
+    if (alb) alb.innerHTML = state.liveClasses.map(l => `
+      <tr><td><strong>${l.title}</strong></td><td>${l.teacher}</td><td>${l.date} ${l.time}</td><td><span class="badge ${l.status==='live'?'badge-coral':'badge-blue'}">${l.status}</span></td><td>${l.registered}</td><td>
+        <button class="btn-sm" style="background:var(--bg3);border:1px solid var(--border);color:var(--muted);" onclick="deleteLive('${l._id}')">Delete</button>
+      </td></tr>`).join('');
+    const anb = document.getElementById('adminNotesBody');
+    if (anb) anb.innerHTML = state.notes.map(n => `
+      <tr><td>${n.emoji} <strong>${n.title}</strong></td><td>${n.subject}</td><td>${n.pages}</td><td>₹${n.price}</td><td>${n.downloads}</td><td>
+        <button class="btn-sm" style="background:var(--bg3);border:1px solid var(--border);color:var(--muted);" onclick="deleteNote('${n._id}')">Delete</button>
+      </td></tr>`).join('');
+    const asb = document.getElementById('adminStudentsBody');
+    if (asb) asb.innerHTML = sampleStudents.map(s => `
+      <tr><td><strong>${s.name}</strong></td><td>${s.email}</td><td>${s.courses}</td><td>${s.joined}</td><td><span class="badge ${s.status==='active'?'badge-green':'badge-coral'}">${s.status}</span></td></tr>`).join('');
+    document.getElementById('totalStudents').textContent = sampleStudents.length;
+  }
+}
+
+function showDashSection(id, btn) {
+  document.querySelectorAll('.dash-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.sidebar-link').forEach(b => b.classList.remove('active'));
+  document.getElementById('dash-'+id)?.classList.add('active');
+  if (btn) btn.classList.add('active');
+}
+
+function switchAdmin(tab, btn) {
+  document.querySelectorAll('.admin-tab').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.admin-content').forEach(c => c.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  document.getElementById('admin-'+tab)?.classList.add('active');
+}
+
+// ═══════════════════════════════════════════════════
+// ADMIN CRUD
+// ═══════════════════════════════════════════════════
+async function addCourse() {
+  const title = document.getElementById('newCourseTitle').value;
+  const desc = document.getElementById('newCourseDesc').value;
+  const category = document.getElementById('newCourseCat').value.toLowerCase();
+  const coursePriceVal = document.getElementById('newCoursePrice').value;
+  const price = coursePriceVal !== '' ? parseInt(coursePriceVal) : 0;
+  const duration = document.getElementById('newCourseDuration').value||'10 hrs';
+  const instructor = document.getElementById('newCourseInstructor').value||'Expert';
+  if (!title) { toast('Please enter a course title', 'error'); return; }
+  const thumbs = ['thumb-blue','thumb-purple','thumb-green','thumb-teal','thumb-gold','thumb-orange'];
+  const emojis = ['📚','🎯','💡','🔥','⚡','🚀'];
+  const newCourse = { _id:'c'+Date.now(), title, description:desc, category, price, oldPrice:price*2, rating:4.5, students:0, duration, lessons:20, instructor, emoji:emojis[Math.floor(Math.random()*emojis.length)], thumb:thumbs[Math.floor(Math.random()*thumbs.length)], includes:['Video lectures','Lifetime access','Certificate'], curriculum:[] };
+  try {
+    const res = await fetch(API+'/courses', { method:'POST', headers:{'Content-Type':'application/json','Authorization':'Bearer '+localStorage.getItem('epToken')}, body:JSON.stringify(newCourse) });
+    if (res.ok) newCourse._id = (await res.json())._id;
+  } catch {}
+  state.courses.push(newCourse);
+  renderCourses(); renderHome(); closeModal('addCourseModal'); renderDashboard();
+  toast(`Course "${title}" published successfully! 🎓`, 'success');
+}
+
+async function addLiveClass() {
+  const title = document.getElementById('newLiveTitle').value;
+  const date = document.getElementById('newLiveDate').value;
+  const time = document.getElementById('newLiveTime').value;
+  const duration = document.getElementById('newLiveDuration').value||60;
+  const livePriceVal = document.getElementById('newLivePrice').value;
+  const price = livePriceVal !== '' ? parseInt(livePriceVal) : 0;
+  const teacher = document.getElementById('newLiveTeacher').value;
+  const link = document.getElementById('newLiveLink').value;
+  if (!title||!date||!time) { toast('Please fill required fields', 'error'); return; }
+  const newLive = { _id:'l'+Date.now(), title, date, time, duration:parseInt(duration), price, teacher, link, status:'upcoming', registered:0 };
+  try {
+    const res = await fetch(API+'/live-classes', { method:'POST', headers:{'Content-Type':'application/json','Authorization':'Bearer '+localStorage.getItem('epToken')}, body:JSON.stringify(newLive) });
+    if (res.ok) newLive._id = (await res.json())._id;
+  } catch {}
+  state.liveClasses.push(newLive);
+  renderLive(); closeModal('addLiveModal'); renderDashboard();
+  toast(`Live class "${title}" scheduled! 📡`, 'success');
+}
+
+function handleFileSelect(input) {
+  var file = input.files[0];
+  if (file) {
+    var label = document.getElementById('uploadLabel');
+    if (label) {
+      label.textContent = '✅ ' + file.name + ' (' + (file.size/1024).toFixed(1) + ' KB)';
+      label.style.color = 'var(--teal)';
+    }
+    var area = document.getElementById('uploadArea');
+    if (area) area.style.borderColor = 'var(--teal)';
+  }
+}
+
+function addNote() {
+  var title     = document.getElementById('newNoteTitle').value.trim();
+  var subject   = document.getElementById('newNoteCat').value.toLowerCase();
+  var priceVal  = document.getElementById('newNotePrice').value;
+  var price     = priceVal !== '' ? parseInt(priceVal) : 0;
+  var pages     = parseInt(document.getElementById('newNotePages').value) || 50;
+  var fileInput = document.getElementById('newNoteFile');
+  var file      = fileInput && fileInput.files.length > 0 ? fileInput.files[0] : null;
+  var btn       = document.querySelector('#addNoteModal .btn-primary');
+
+  if (!title)  { toast('Please enter a title', 'error'); return; }
+  if (!file)   { toast('Please select a PDF file first', 'error'); return; }
+  if (!file.name.toLowerCase().endsWith('.pdf')) { toast('Only .pdf files allowed', 'error'); return; }
+
+  if (btn) { btn.textContent = '⏳ Uploading...'; btn.disabled = true; }
+
+  var emojis  = { programming:'📘', mathematics:'📐', science:'🔬', competitive:'🏆' };
+  var noteId  = 'n' + Date.now();
+  var newNote = { _id:noteId, title:title, subject:subject, price:price, pages:pages, emoji:emojis[subject]||'📄', downloads:0 };
+
+  function finish() {
+    // 1. Add to state
+    state.notes.push(newNote);
+
+    // 2. Reset button and form FIRST — before any render that could crash
+    if (btn) { btn.textContent = 'Upload Notes'; btn.disabled = false; }
+    document.getElementById('newNoteTitle').value = '';
+    document.getElementById('newNotePrice').value = '';
+    document.getElementById('newNotePages').value = '';
+    fileInput.value = '';
+    var lbl = document.getElementById('uploadLabel');
+    var ar  = document.getElementById('uploadArea');
+    if (lbl) { lbl.textContent = 'Click to select PDF file'; lbl.style.color = 'var(--muted)'; }
+    if (ar)  { ar.style.borderColor = 'var(--border)'; }
+
+    // 3. Show success toast
+    toast('"' + title + '" uploaded successfully! 📄', 'success');
+
+    // 4. Close modal
+    closeModal('addNoteModal');
+
+    // 5. Re-render pages safely
+    try { renderNotes(); }      catch(e) { console.warn('renderNotes error', e); }
+    try { renderDashboard(); }  catch(e) { console.warn('renderDash error', e); }
+  }
+
+  // Read PDF and save to localStorage, then call finish()
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    try { localStorage.setItem('pdf_' + noteId, e.target.result); } catch(ex) { /* quota full — skip */ }
+    finish();
+  };
+  reader.onerror = function() {
+    // Even if read fails, still add the note (just without download)
+    finish();
+  };
+  reader.readAsDataURL(file);
+}
+
+function deleteCourse(id) {
+  if (!confirm('Delete this course?')) return;
+  state.courses = state.courses.filter(c => c._id !== id);
+  fetch(API+'/courses/'+id, { method:'DELETE', headers:{'Authorization':'Bearer '+localStorage.getItem('epToken')} }).catch(()=>{});
+  renderDashboard(); renderCourses(); toast('Course deleted', 'success');
+}
+
+function deleteLive(id) {
+  if (!confirm('Delete this class?')) return;
+  state.liveClasses = state.liveClasses.filter(l => l._id !== id);
+  fetch(API+'/live-classes/'+id, { method:'DELETE', headers:{'Authorization':'Bearer '+localStorage.getItem('epToken')} }).catch(()=>{});
+  renderDashboard(); renderLive(); toast('Live class deleted', 'success');
+}
+
+function deleteNote(id) {
+  if (!confirm('Delete this note?')) return;
+  state.notes = state.notes.filter(n => n._id !== id);
+  fetch(API+'/notes/'+id, { method:'DELETE', headers:{'Authorization':'Bearer '+localStorage.getItem('epToken')} }).catch(()=>{});
+  renderDashboard(); renderNotes(); toast('Note deleted', 'success');
+}
+
+// ═══════════════════════════════════════════════════
+// MODALS
+// ═══════════════════════════════════════════════════
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+function closeModalBg(e, id) { if (e.target.id === id) closeModal(id); }
+function switchModal(close, open) { closeModal(close); openModal(open); }
+
+// ═══════════════════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════════════════
+function toast(msg, type='success') {
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  t.innerHTML = `<span>${type==='success'?'✅':'❌'}</span><span>${msg}</span>`;
+  document.getElementById('toastContainer').appendChild(t);
+  setTimeout(() => { t.style.animation = 'slideOut .3s ease forwards'; setTimeout(() => t.remove(), 300); }, 3000);
+}
+
+// ═══════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════
+window.addEventListener('DOMContentLoaded', () => {
+  if (state.user) setUser(state.user, localStorage.getItem('epToken'));
+  loadData();
+});
+</script>
+</body>
+</html>
